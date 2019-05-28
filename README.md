@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # README
 
 This README would normally document whatever steps are necessary to get the
@@ -22,3 +23,7 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+=======
+# job-recruitment-platform
+a job recruitment platform
+>>>>>>> 13e21464274adf018d6772b3c977e7c39bcc21c5
