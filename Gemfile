@@ -10,8 +10,11 @@ gem 'bootstrap-sass', '~> 3.4.1'
 gem 'sassc-rails', '>= 2.1.0'
 # Use sqlite3 as the database for Active Record
 group :development, :test do
+ 
   gem 'sqlite3'
   gem 'rspec-rails', '2.9.0'
+  gem 'guard-rspec', '0.5.5'
+  gem 'spork', '0.9.0'
 end
 
 gem 'jquery-rails'
@@ -68,6 +71,8 @@ group :test do
   gem 'selenium-webdriver'
   # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'chromedriver-helper'
+  gem 'rb-inotify', '0.8.8'
+  gem 'libnotify', '0.5.9'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
