@@ -1,4 +1,4 @@
-def full_titl(page_title)
+def full_title(page_title)
     base_title ="Job Recruitment platform"
     if page_title.empty?
         base_title

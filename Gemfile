@@ -16,6 +16,10 @@ group :development, :test do
   gem 'guard-rspec', require: false
 end
 
+gem 'bcrypt-ruby','~> 3.1.1'
+
+gem 'factory_girl_rails', '~> 4.9'
+
 gem 'jquery-rails'
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
