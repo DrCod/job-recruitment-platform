@@ -5,7 +5,7 @@ ruby '2.6.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
-
+gem 'pg', '0.12.2'
 gem 'bootstrap-sass', '~> 3.4.1'
 gem 'sassc-rails', '>= 2.1.0'
 # Use sqlite3 as the database for Active Record
@@ -64,9 +64,6 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
-group :production do
-  gem 'pg', '0.12.2'
-end
 
 group :test do
   # Adds support for Capybara system testing and selenium driver
