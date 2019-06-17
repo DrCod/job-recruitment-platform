@@ -18,7 +18,7 @@ end
 
 gem 'bcrypt-ruby','~> 3.1.1'
 
-gem 'factory_bot'
+gem "factory_bot_rails"
 
 gem 'jquery-rails'
 # Use Puma as the app server
