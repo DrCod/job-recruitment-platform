@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-RSpec.describe User, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
-end
+#RSpec.describe User, type: :model do
+ # pending "add some examples to (or delete) #{__FILE__}"
+#end
 
-describe "User pages" do
+describe "User" do
 
   subject{ page }
 
@@ -21,6 +21,12 @@ describe "User pages" do
     end
   end
 
+  describe "remember token" do
+    before {@user.save }
+    its(:remember_token){should_not  be_blank}
+    end
+
+    
   describe "with valid information" do
     before do
       fill_in "Name", with: "Example User"
@@ -30,6 +36,13 @@ describe "User pages" do
       fill_in "Password", with: "foo"
       fill_in "Confirm Password", with: "foo"
     end
+
+    it {should respond_to(:password) }   
+    it {should respond_to(:password_confirmation) }
+    it {should respond_to(:remember_token) }
+    it {should respond_to(:authenticate)}
+    it{should respond_to(:pasword_digest)}
+
 
     it "should create a user" do
       expect { click_button submit}.to change(User, :count).by(1)
