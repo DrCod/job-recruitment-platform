@@ -110,11 +110,8 @@ GEM
     diff-lcs (1.3)
     erubi (1.8.0)
     execjs (2.7.0)
-    factory_girl (4.9.0)
-      activesupport (>= 3.0.0)
-    factory_girl_rails (4.9.0)
-      factory_girl (~> 4.9.0)
-      railties (>= 3.0.0)
+    factory_bot (5.0.2)
+      activesupport (>= 4.2.0)
     ffi (1.11.1)
     formatador (0.2.5)
     gherkin (5.1.0)
@@ -307,7 +304,7 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   cucumber-rails
   database_cleaner
-  factory_girl_rails (~> 4.9)
+  factory_bot
   guard-rspec
   jbuilder (~> 2.5)
   jquery-rails
