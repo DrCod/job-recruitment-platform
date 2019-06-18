@@ -8,6 +8,10 @@ gem 'rails', '~> 5.2.3'
 gem 'pg', '0.18.4'
 gem 'bootstrap-sass', '~> 3.4.1'
 gem 'sassc-rails', '>= 2.1.0'
+gem 'will_paginate', '~> 3.1.0'
+
+
+gem 'faker', :git => 'https://github.com/stympy/faker.git', :branch => 'master'
 # Use sqlite3 as the database for Active Record
 group :development, :test do
  

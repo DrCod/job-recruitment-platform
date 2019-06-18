@@ -5,18 +5,30 @@ require 'spec_helper'
 #end
 
 RSpec.describe User,type: :model do
+describe "User pages" do
 
     before do
         @user = User.new(name: "Example",email: "user@example.com",address: "Example",phone: 5555555555,password: "foobvar",password_confirm: "foobvar")
     end
 
     subject{ @user}
-
-    describe "remember token" do
-        before {@user.save }
-        its(:remember_token){should_not  be_blank}
-        
+  describe "index" do
+    before do
+      sign_in FactoryBot.create(:user)
+      FactoryBot.create(:user, name: "Bob", email: "bob@example.com")
+      FactoryBot.create(:user, name: "Ben", email: "ben@example.com")
+      visit users_path
     end
+
+    it { should have_selector('title', text: 'All users') }
+    it { should have_selector('h1',text: 'All users') }
+
+    it "should list each user" do
+      User.all.each do |user|
+        page.should have_selector('li',text: user.name)
+      end
+    end
+  end
 
     describe "signup" do
 
@@ -61,6 +73,11 @@ RSpec.describe User,type: :model do
         before{@user.password =@password_confirm="a"*5}
         it{ should be_invalid}
     end
+  describe "remember token" do
+    before {@user.save }
+    its(:remember_token){should_not  be_blank}
+    end
+  end
     
     describe "when name is not present" do
         before {@user.name =" "}
@@ -86,6 +103,18 @@ RSpec.describe User,type: :model do
     describe "when email is not present" do
         before {@user.password_confirm =" "}
         it{ should_not be_valid}
+    it {should respond_to(:password) }   
+    it {should respond_to(:password_confirmation) }
+    it {should respond_to(:remember_token) }
+    it{should respond_to(:admin)}
+    it {should respond_to(:authenticate)}
+    it{should respond_to(:pasword_digest)}
+    it{should be_valid}
+    it{should_not be_admin}
+
+    describe "with admin attribute set to 'true'" do
+      before{ @user.toggle!(:admin)}
+      it{ shoud be_admin}
     end
 
     describe "when password doesn't match confirmation" do
@@ -125,6 +154,53 @@ RSpec.describe User,type: :model do
                 @user.should be_valid
         end
     end
+  end 
+  
+  describe "edit" do
+    let(:user){FactoryBot.create(:user) }
+    before do
+      sign_in user
+      visit edit_user_path(user)
+    end
+    
+    before {visit edit_user_path(user) }
+
+    describe "page" do
+      it{should have_selector('h1',text: "Udpate your profile")}
+      it{ should have_selector('title',text: "Edit user")}
+      it{ should have_link('change', href: "#")}
+    end
+    describe "with invalid information" do
+      before{ click_button "Save changes"}
+
+      it{should have_content('error')}
+    end
+
+    describe "with valid information" do
+      let(:new_name) {"New Name"}
+      let(:new_email){"new@example.com"}
+      let(:new_address){"New Address"}
+      let(:new_phone){"New Phone Contact"}
+      before do
+        fill_in "Name", with: new_name
+        fill_in "Email", with:new_email
+        fill_in "Address", with: new_address
+        fill_in "Phone", with: new_phone
+        fill_in "Password", with: user.password
+        fill_in "Confirm  Password", with: user.password
+        click_button "Save changes"
+      end
+
+      it{ should have_selector('title',text: new_name)}
+      it{ should have_selector('div.alert.alert-success')}
+      it{should have_link('Sign out', href: signout_path)}
+      specify{user.reload.name.should ==new_name}
+      specify{user.reload.email.should==new_email}
+      specify{user.reload.phone.should==new_phone}
+      specify{user.reload.address.should==new_address}
+    end
+  end
+ end
 
     describe "when email address is already taken" do
         before do
