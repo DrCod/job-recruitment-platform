@@ -1,6 +1,5 @@
 class User < ApplicationRecord
 
-    attr_accessible :name, :email, :address,:phone,:password,:password_confirm
     has_secure_password
     before save { |user| user.email = email.downcase }
     before_save :create_remember_token
