@@ -4,7 +4,6 @@ require 'spec_helper'
  # pending "add some examples to (or delete) #{__FILE__}"
 #end
 
-RSpec.describe User,type: :model do
 describe "User pages" do
 
     before do
@@ -15,8 +14,8 @@ describe "User pages" do
   describe "index" do
     before do
       sign_in FactoryBot.create(:user)
-      FactoryBot.create(:user, name: "Bob", email: "bob@example.com")
-      FactoryBot.create(:user, name: "Ben", email: "ben@example.com")
+      FactoryBot.create(:user, name: "Bob", email: "bob@example.com",address: "Example",phone: 5555555555,password: "foobvar",password_confirm: "foobvar")
+      FactoryBot.create(:user, name: "Ben", email: "ben@example.com",address: "Example",phone: 5555555555,password: "foobvar",password_confirm: "foobvar")
       visit users_path
     end
 
@@ -49,7 +48,7 @@ describe "User pages" do
             fill_in "Name", with: "Example User"
             fill_in "Email", with: "user@example.com"
             fill_in "Address", with: "Example Location"
-            fill_in "Phone", with: "Example Phone"
+            fill_in "Phone", with: 0000000000
             fill_in "Password", with: "foo"
             fill_in "Confirm Password", with: "foo"
           end
@@ -93,7 +92,7 @@ describe "User pages" do
         it{ should_not be_valid}
     end
     describe "when phone is not present" do
-        before {@user.phone =0}
+        before {@user.phone =0000000000}
         it{ should_not be_valid}
     end
     describe "when password is not present" do

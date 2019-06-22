@@ -45,6 +45,11 @@ class UsersController < ApplicationController
     end
   end
 
+  def show
+    @user =User.find(params[:id])
+    @microposts = @user.microposts.paginate(page: params[:page])
+  end
+
   private 
 
     # Use callbacks to share common setup or constraints between actions.
@@ -55,6 +60,7 @@ class UsersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:name, :email, :address, :phone, :password, :password_confirm)
+      params.require(:micropost).permit(:content)
     end
 
 

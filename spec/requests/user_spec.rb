@@ -4,9 +4,27 @@ require 'spec_helper'
  # pending "add some examples to (or delete) #{__FILE__}"
 #end
 
-describe "User pages" do
+describe "User" do
 
   subject{ page }
+
+
+  describe "profile page" do
+    let(:user) {FactoryBot.create(:user)}
+    let!(:m1) {FactoryBot.create(:micropost,user: user, content: "Foo")}
+    let!(:m2) {FactoryBot.create(:micropost,user: user, content: "Bar")}
+
+    before {visit user_path(user)}
+
+    it{should have_selector('h1',text: user.name)}
+    it{should have_selector('title',text: user.name)}
+
+    describe "microposts" do
+      it{ should have_content(m1.content)}
+      it{ should have_content(m2.content)}
+      it{ should have_content(user.microposts.count)}
+    end
+  end
 
   describe "index" do
     let(:user){FactoryBot.create(:user)}
@@ -69,7 +87,7 @@ describe "User pages" do
       fill_in "Name", with: "Example User"
       fill_in "Email", with: "user@example.com"
       fill_in "Address", with: "Example Location"
-      fill_in "Phone", with: "Example Phone"
+      fill_in "Phone", with: 5555555555
       fill_in "Password", with: "foo"
       fill_in "Confirm Password", with: "foo"
     end
@@ -80,6 +98,8 @@ describe "User pages" do
     it{should respond_to(:admin)}
     it {should respond_to(:authenticate)}
     it{should respond_to(:pasword_digest)}
+    it{shoud respond_to(:microposts)}
+    it{should respond_to(:feed) }
     it{should be_valid}
     it{should_not be_admin}
 
@@ -136,6 +156,38 @@ describe "User pages" do
       specify{user.reload.email.should==new_email}
       specify{user.reload.phone.should==new_phone}
       specify{user.reload.address.should==new_address}
+    end
+  end
+
+  describe "micropost asscociations" do
+
+    before{ @user.save } 
+    let!(:older_micropost) do
+      FactoryBot.create(:micropost, user: @user, created_at: 1.day.ago)
+    end
+
+    let!(:newer_micropost) do
+      FactoryBot.create(:micropost, user: @user, created_at: 1.hour.ago)
+    end
+
+    it "should have the right microposts in the right order" do
+      @user.microposts.should == [newer_micropost, older_micropost]
+    end
+
+    it "should destroy associated microposts" do
+      microposts =@user.microposts
+      @user.destroy
+      microposts.each do |micropost|
+        Micropost.find_by_id(micropost.id).should be_nil
+      end
+    end
+    describe "status" do
+      let(:unfollowed_post) do
+        FactoryBot.create(:micropost, user: FactoryBot.create(:user))
+      end
+      its(:feed){ should include(newer_micropost) }
+      its(:feed){should include(older_micropost) }
+      its(:feed) {should_not include(unfollowed_post)}
     end
   end
 end
