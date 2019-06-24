@@ -24,6 +24,55 @@ describe "User" do
       it{ should have_content(m2.content)}
       it{ should have_content(user.microposts.count)}
     end
+
+    describe "follow/unfollow buttons" do
+      let(:other_user){ FactoryBot.create(:user) }
+      before { sign_in user}
+
+      describe "following a user" do
+        before { visit user_path(other_user)}
+
+        it "should increment the followed user count" do
+          expect do
+            click_button "Follow"
+          end.to change(user.followed_users, :count).by(1)
+        end
+        
+        it "should increment the other user's followers count" do
+          expect do
+            click_button "Follow"
+          end.to change(other_user.followers, :count).by(1)
+        end
+
+        describe "toggling the button" do
+          before {click_button "Follow"}
+          it{ should have_selector('input', value: 'unfollow')}
+        end
+      end
+      describe "unfollow a user" do
+        before do
+          user.follow!(other_user)
+          visit user_path(other_user)
+        end
+
+        describe "for non-signed-in users" do
+          let(:user){ FactoryBot.create(:user) }
+
+          describe "in the Relationships controller" do
+            describe "submitting to the create action" do
+              before { post relationships_path}
+              specify{ response.should redirect_to(signin_path) }
+            end
+
+            describe "submitting to the destroy action" do
+              before { delete relationship_path(1)}
+              specify{ response.should redirect_to(signin_path) }
+            end
+          end
+        end
+      end
+    end
+        
   end
 
   describe "index" do
@@ -98,14 +147,14 @@ describe "User" do
     it{should respond_to(:admin)}
     it {should respond_to(:authenticate)}
     it{should respond_to(:pasword_digest)}
-    it{shoud respond_to(:microposts)}
+    it{should respond_to(:microposts)}
     it{should respond_to(:feed) }
     it{should be_valid}
     it{should_not be_admin}
 
     describe "with admin attribute set to 'true'" do
       before{ @user.toggle!(:admin)}
-      it{ shoud be_admin}
+      it{ should be_admin}
     end
 
 

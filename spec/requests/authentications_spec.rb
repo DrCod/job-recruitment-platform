@@ -42,6 +42,11 @@ RSpec.describe "Authentications", type: :request do
   end
   describe "authorization" do
 
+    def destroy
+      @user =Relationship.find(params[:id]).followed
+      current_user.unfollow!(@user)
+      redirect_to @user
+    end
 
     describe "as non-admin user" do
       let(:user) { FactoryBot.create(:user) }
@@ -58,6 +63,18 @@ RSpec.describe "Authentications", type: :request do
 
       let(:user) {FactoryBot.create(:user)}
 
+      describe "in the Users controller" do
+        describe "followers" do
+          before do
+            sign_in other_user
+            visit followers_user_path(other_user)
+          end
+          it{ should have_selector('title', text: full_title('Followers'))}
+          it{should have_selector('h3'.text: 'Followers')}
+          it{should have_link(user.name, href: user_path(user))}
+        end
+      end
+      
       describe "in the Microposts controller" do
         describe "submitting to the create action" do
           before { post microposts_path }

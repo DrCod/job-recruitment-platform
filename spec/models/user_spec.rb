@@ -11,6 +11,40 @@ describe "User pages" do
     end
 
     subject{ @user}
+
+
+    describe "micropost asscociations" do
+
+      before{ @user.save } 
+      let!(:older_micropost) do
+        FactoryBot.create(:micropost, user: @user, created_at: 1.day.ago)
+      end
+  
+      let!(:newer_micropost) do
+        FactoryBot.create(:micropost, user: @user, created_at: 1.hour.ago)
+      end
+  
+      it "should have the right microposts in the right order" do
+        @user.microposts.should == [newer_micropost, older_micropost]
+      end
+  
+      it "should destroy associated microposts" do
+        microposts =@user.microposts
+        @user.destroy
+        microposts.each do |micropost|
+          Micropost.find_by_id(micropost.id).should be_nil
+        end
+      end
+      describe "status" do
+        let(:unfollowed_post) do
+          FactoryBot.create(:micropost, user: FactoryBot.create(:user))
+        end
+        let(:followed_user) { FactoryBot.create(:user) }
+      end
+    end
+
+
+
   describe "index" do
     before do
       sign_in FactoryBot.create(:user)
@@ -56,17 +90,50 @@ describe "User pages" do
         end
     end
 
-    it{ should respond_to(:name) }
-    it{shold respond_to(:email)}
-    it{shold respond_to(:address)}
-    it{shold respond_to(:phone)}
-    it{shold respond_to(:password)}
-    it{shold respond_to(:password_confirm}
+    it{should respond_to(:name) }
+    it{should respond_to(:email)}
+    it{should respond_to(:address)}
+    it{should respond_to(:phone)}
+    it{should respond_to(:password)}
+    it{should respond_to(:password_confirm}
     it{should respond_to(:password_digest)}
     it{should respond_to(:authenticate)}
+    it{should respond_to(:relationships)}
+    it{should respond_to(:followed_users)}
+    it{should respond_to(:following?)}
+    it{should respond_to(:follow!)}
+    it{should respond_to(:unfollow!)}
+    it{should respond_to(:reverse_relationships)}
+    it{should respond_to(:followers) }
 
 
     it{ should be_valid }
+
+
+    describe "following" do
+      let(:other_user){ FactoryBot.create(:user) }
+      before do
+        @user.save
+        @user.follow!(other_user)
+      end
+
+      it{ should be_following(other_user)}
+      its(:followed_users){ should include(other_user)}
+
+      describe  "followed user" do
+        subject{ other_user }
+        its(:followers) { should include(@user) }
+      end
+
+      
+      describe "and unfollowing" do
+        before{@user.unfollow!(other_user) }
+
+        it{ should_not be_following(other_user) }
+        its(:followed_users){ should_not include(other_user) }
+      end
+    end
+  
 
     describe "with a password that's too short" do
         before{@user.password =@password_confirm="a"*5}
@@ -102,18 +169,18 @@ describe "User pages" do
     describe "when email is not present" do
         before {@user.password_confirm =" "}
         it{ should_not be_valid}
-    it {should respond_to(:password) }   
-    it {should respond_to(:password_confirmation) }
-    it {should respond_to(:remember_token) }
+    it{should respond_to(:password) }   
+    it{should respond_to(:password_confirmation) }
+    it{should respond_to(:remember_token) }
     it{should respond_to(:admin)}
-    it {should respond_to(:authenticate)}
+    it{should respond_to(:authenticate)}
     it{should respond_to(:pasword_digest)}
     it{should be_valid}
     it{should_not be_admin}
 
     describe "with admin attribute set to 'true'" do
       before{ @user.toggle!(:admin)}
-      it{ shoud be_admin}
+      it{ should be_admin}
     end
 
     describe "when password doesn't match confirmation" do

@@ -10,7 +10,7 @@
   Posted <%= time_ago_in_words(feed_item.created_at) %> ago.
 </span>
 
-<%if current_user?(micropost.user)%>
+<%if current_user?(@micropost.user)%>
  <%link_to "delete", feed_item, method: :delete,confirm: "You sure?", title: feed_item.content%>
 <% end %>
 </li>

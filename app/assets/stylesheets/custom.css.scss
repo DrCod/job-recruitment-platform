@@ -199,3 +199,32 @@ aside{
         margin-bottom: 5px;
     }
 }
+
+/*sidebars*/
+.stats {
+    overflow: auto;
+
+    a {
+
+    float: left;
+    padding: 0 10px;
+    border-left: 1px solid #999;
+    color: gray;
+
+    &:first-child {
+
+    padding-left: 0;
+    border: 0;
+    }
+
+    &:hover {
+    text-decoration: none;
+    color: #00f;
+    }
+
+}
+ strong {
+    display: block;
+    }
+}
+

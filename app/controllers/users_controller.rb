@@ -1,8 +1,25 @@
 class UsersController < ApplicationController
 
-  before_action :signed_in_user, only: [:index,:edit, :update,:destroy]
+  before_action :signed_in_user, 
+  only: [:index,:edit, :update,:destroy,:following,:followers]
   before_action :correct_user, only: [:edit, :update]
   before_action :admin_user ,  only: :destroy
+
+
+
+  def following
+    @title ="Following"
+    @user =User.find(params[:id])
+    @users =@user.followed_users.paginate(page: params[:page])
+    render 'show_follow'
+  end
+
+  def followers
+    @title ="Followers"
+    @user =User.find(params[:id])
+    @users =@user.followers.paginate(page: params[:page])
+    render 'show_follow'
+  end
 
   def destroy
     User.find(params[:id]).destroy
@@ -60,7 +77,6 @@ class UsersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:name, :email, :address, :phone, :password, :password_confirm)
-      params.require(:micropost).permit(:content)
     end
 
 
